@@ -1,0 +1,35 @@
+The code provided is a Java implementation of a parser for a mathematical expression. The parser is capable of handling
+basic arithmetic operations, including addition, subtraction, multiplication, division, and exponentiation, as well as
+several mathematical functions, such as sine, cosine, and square root. The code consists of two parts, with the first
+part containing the main method that takes an input string and returns the parsed expression as a Quantity object. The
+second part of the code contains several helper methods used to parse and manipulate the input string.
+
+The first part of the code is the main method parseExpression, which takes a string input as a parameter and returns a
+Quantity object representing the parsed expression. The method first initializes a TokenString object by parsing the
+input string using the parseTokens method. The parseTokens method splits the input string into individual tokens, which
+are then added to the TokenString object. The method then calls the doOrderOfOperations method, which recursively
+applies the order of operations to the TokenString object until it is fully evaluated. The final result is then returned
+ as a Quantity object.
+
+The second part of the code contains several helper methods used by the parseExpression method to parse and manipulate
+the input string. These methods include parseFunctionParams, getFunctionParamsEnd, scanFromRight, and
+substituteUnaryMinus.
+
+The parseFunctionParams method parses the function parameters of a specified type from a token string. It takes a
+TokenString object and a TokenType object as parameters and returns a Quantity object representing the parsed
+parameters. The method splits the token string into individual parameter strings using commas as a delimiter and then
+recursively applies the doOrderOfOperations method to each parameter string.
+
+The getFunctionParamsEnd method finds the index of the closing parentheses of the function parameters given the starting
+index of the opening parentheses. It takes a TokenString object and an integer as parameters and returns an integer
+representing the index of the closing parentheses.
+
+The scanFromRight method scans the token string from right to left and finds the index of the given token type or any
+function token type, taking into account any nested parentheses. It takes a TokenString object and a TokenType object as
+ parameters and returns an integer representing the index of the token.
+
+The substituteUnaryMinus method replaces unary minus symbols with equal expressions. It takes a TokenString object as a
+parameter and modifies the token string in place by replacing any unary minus symbols with the equivalent expression.
+
+Overall, the code is well-organized and follows standard Java coding conventions. The use of helper methods helps to
+simplify the main parsing logic and makes the code more readable and maintainable.

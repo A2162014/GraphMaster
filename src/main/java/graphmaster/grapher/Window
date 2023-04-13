@@ -1,0 +1,19 @@
+This is Java code for a GUI application that displays a graph of a mathematical function. The graph is drawn using
+Java's AWT (Abstract Window Toolkit) and Swing libraries.
+
+The main class in this code is Window, which extends the JPanel class and implements several interfaces
+(MouseWheelListener, KeyListener, and Runnable).
+
+The Window class has several instance variables, including buff and g2d (a buffered image and graphics context for
+drawing), parser and function (an expression parser and the function to graph), windowX, windowY, windowWidth, and
+windowHeight (window properties), mousePt (the current mouse position), textBox (the input field for mathematical
+expressions), and yVar and zVar (time variables).
+
+The Window class has several methods, including updateDT() (which updates the time variables), paintComponent()
+(which paints the graph), isaBoolean() (which checks if a given KeyEvent represents a valid character for a boolean
+expression), and the constructor (which sets up the GUI and initializes the instance variables).
+
+The paintComponent() method first clears the screen, then evaluates the function and plots the points, and finally draws
+ the x-axis, y-axis, function equation, and image. It also converts point lists to arrays, and draws the graph.
+
+The code also includes two inner classes, MyMouseAdapter and MyMouseMotionAdapter, which handle mouse events.

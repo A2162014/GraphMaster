@@ -10,178 +10,229 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The window in which the graph is displayed.
+ */
 public class Window extends JPanel implements MouseWheelListener, KeyListener, Runnable {
-    public static final int WIDTH = 1024;
-    public static final int HEIGHT = 768;
+    /**
+     * The width of the window.
+     */
+    private static final int WIDTH = 1024;
+    /**
+     * The height of the window.
+     */
+    private static final int HEIGHT = 768;
 
+    // The buffered image and graphics context for drawing
     private final BufferedImage buff;
     private final Graphics2D g2d;
 
+    // Expression parser and function to graph
     private final ExpressionParser parser;
     private Function function;
 
+    // Window properties
     private double windowX, windowY, windowWidth, windowHeight;
     private Point mousePt;
 
+    // Field for inputting expressions
     private String textBox;
     // Time variables
-    private double yVar = 0.0;    // Constantly increasing
-    private double zVar = 0.0;    // Cycles smoothly from -1 to 1
+    private double yVar;    // Constantly increasing
+    private double zVar;    // Cycles from –1 to 1
+
+    /**
+     * Constructs a new window.
+     */
     public Window() {
+        // Add event listeners
         addMouseWheelListener(this);
         addKeyListener(this);
-        this.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                mousePt = e.getPoint();
-                repaint();
-            }
-        });
-        this.addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                int dx = e.getX() - mousePt.x;
-                int dy = e.getY() - mousePt.y;
-                windowX -= dx / (double) WIDTH * windowWidth;
-                windowY += dy / (double) HEIGHT * windowHeight;
-                mousePt = e.getPoint();
-                repaint();
-            }
-        });
+        addMouseListener(new MyMouseAdapter());
+        addMouseMotionListener(new MyMouseMotionAdapter());
+
+        // Set focus and size
         setFocusable(true);
         requestFocusInWindow();
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setMinimumSize(new Dimension(WIDTH, HEIGHT));
         setMaximumSize(new Dimension(WIDTH, HEIGHT));
 
+        // Create the buffered image and graphics context
         buff = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         g2d = buff.createGraphics();
 
+        // Create expression parser and function
         parser = new ExpressionParser();
         textBox = "0";
         function = parser.parse(textBox);
 
+        // Initialize window properties
         windowX = 0.0;
         windowY = 0.0;
         windowHeight = 2.0;
         windowWidth = windowHeight * WIDTH / HEIGHT;
     }
 
-    private synchronized void updateDT(double dt) {
-        yVar += dt;
-        zVar = Math.sin(yVar);
+    // This method takes a KeyEvent object and returns a boolean indicating whether the event represents a valid character
+    // for a Boolean expression.
+    private static boolean isaBoolean(KeyEvent e) {
+        // The method checks whether the key character of the KeyEvent is a letter or digit, '^', '-', '+', '', '/', '(',
+        // ')', '%', ',', or '.'. If the character is any of these, it returns true; otherwise, it returns false.
+        return Character.isLetterOrDigit(e.getKeyChar()) || '^' == e.getKeyChar() || '-' == e.getKeyChar() ||
+                '+' == e.getKeyChar() || '*' == e.getKeyChar() || '/' == e.getKeyChar() || '(' == e.getKeyChar() ||
+                ')' == e.getKeyChar() || '%' == e.getKeyChar() || ',' == e.getKeyChar() || '.' == e.getKeyChar();
     }
 
+    /**
+     * Updates the time variables.
+     *
+     * @param dt the change in time
+     */
+    private synchronized void updateDT(double dt) {
+        yVar += dt;
+        zVar = StrictMath.sin(yVar);
+    }
+
+    /**
+     * This method is called to paint the part on the screen.
+     * <p>
+     * It clears the screen, evaluates a function, plots the points and draws the graph.
+     * <p>
+     * It draws the x-axis, y-axis, function equation, and image.
+     *
+     * @param g —the graphics context to use for painting.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        // Clear the screen
         g2d.setColor(Color.WHITE);
         g2d.fillRect(0, 0, WIDTH, HEIGHT);
 
         synchronized (this) {
+            // Evaluate function and plot points
             List<Double> xs = new ArrayList<>();
             List<Double> ys = new ArrayList<>();
-
-            for (int x = 0; x < WIDTH; x++) {
+            for (int x = 0; WIDTH > x; x++) {
                 double xx = toRealX(x);
-
                 double yy = 0.0;
-                if (function != null) yy = function.evaluateAt(xx, yVar, zVar);
-
-                double scaledX = x;
+                if (null != this.function) yy = this.function.evaluateAt(xx, this.yVar, this.zVar);
                 double scaledY = toScreenY(yy);
                 scaledY = Math.min(Math.max(scaledY, -5), HEIGHT + 5);
 
-                xs.add(scaledX);
+                xs.add((double) x);
                 ys.add(scaledY);
             }
 
+            // Convert point lists to arrays
             int[] xa = new int[xs.size()];
             int[] ya = new int[ys.size()];
+
+            // Converting xs and ys to xa and ya respectively
             for (int i = 0; i < xa.length; i++) {
-                xa[i] = xs.get(i).intValue();
+                Double aDouble = xs.get(i);
+                xa[i] = aDouble.intValue();
             }
             for (int i = 0; i < ya.length; i++) {
-                ya[i] = ys.get(i).intValue();
+                Double aDouble = ys.get(i);
+                ya[i] = aDouble.intValue();
             }
 
+            // Drawing x-axis and y-axis
             g2d.setColor(Color.BLACK);
             int xAxisY = toScreenY(0.0);
             g2d.drawLine(0, xAxisY, WIDTH, xAxisY);
-            int yAxisX = toScreenX(0.0);
+            int yAxisX = this.toScreenX();
             g2d.drawLine(yAxisX, 0, yAxisX, HEIGHT);
 
+            // Drawing the graph
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.setColor(new Color(50, 50, 180));
             g2d.setStroke(new BasicStroke(3.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND));
             g2d.drawPolyline(xa, ya, xa.length);
 
+            // Drawing the function equation
             g2d.setFont(new Font("courier new", Font.ITALIC, 40));
             g2d.setColor(Color.LIGHT_GRAY);
-            g2d.fillRect(0, HEIGHT - g2d.getFontMetrics().getHeight(), WIDTH, HEIGHT);
+            FontMetrics fontMetrics = this.g2d.getFontMetrics();
+            this.g2d.fillRect(0, HEIGHT - fontMetrics.getHeight(), WIDTH, HEIGHT);
             g2d.setColor(Color.BLACK);
             g2d.drawString("f(x) = " + textBox, 0.0f, HEIGHT - 10.0f);
 
+            // Drawing the axis labels
             g2d.drawString("x", 0, xAxisY - 10);
-            g2d.drawString("y", yAxisX + 10, g2d.getFontMetrics().getHeight() - 20);
+            this.g2d.drawString("y", yAxisX + 10, fontMetrics.getHeight() - 20);
         }
 
+        // Drawing the image
         g.drawImage(buff, 0, 0, null);
     }
 
+    // Override the run method of the Runnable interface.
     @Override
     public void run() {
-        boolean running = true;
 
+        // Initialize the oldTime variable to zero and the dt variable.
         long oldTime = 0;
-        double dt = 0.0;
+        double dt;
 
-        while (running) {
+        // Enters an infinite loop that updates the dt variable and repaints the GUI.
+        while (true) {
 
+            // Get the current time and calculate the elapsed time since the last update.
             long newTime = System.nanoTime();
-            dt = (newTime - oldTime) / 1000000000.0;
+            dt = (newTime - oldTime) / 1.0E09;
             oldTime = newTime;
 
+            // Update the simulation with the new dt value and repaint the GUI.
             updateDT(dt);
             repaint();
 
+            // Pause the thread for one millisecond to avoid overloading the CPU.
             try {
-                Thread.sleep(1);
+                Thread.sleep(1L);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
+
+    // Overrides the keyTyped method of the KeyListener interface.
     @Override
     public void keyTyped(KeyEvent e) {
 
     }
 
+    // Overrides the keyPressed method of the KeyListener interface.
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-            if (textBox.length() > 0) {
+        // If the backspace key is pressed, removes the last character from the field.
+        if (KeyEvent.VK_BACK_SPACE == e.getKeyCode()) {
+            if (!textBox.isEmpty()) {
                 textBox = textBox.substring(0, textBox.length() - 1);
             }
-        } else if (Character.isLetterOrDigit(e.getKeyChar()) || e.getKeyChar() == '^' || e.getKeyChar() == '-' ||
-                e.getKeyChar() == '+' || e.getKeyChar() == '*' || e.getKeyChar() == '/' || e.getKeyChar() == '(' ||
-                e.getKeyChar() == ')' || e.getKeyChar() == '%' || e.getKeyChar() == ',' || e.getKeyChar() == '.') {
+        } else if (isaBoolean(e)) { // If a letter or number is pressed, adds it to the field.
             textBox += e.getKeyChar();
-        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+        } else if (KeyEvent.VK_ENTER == e.getKeyCode()) {    // If the enter key is pressed,
+            // parses the field as a function
+            // and updates the function variable.
             function = parser.parse(textBox);
-            if (function == null) {
+            if (null == function) {
                 textBox = "";
             }
         }
     }
 
+    // Overrides the keyReleased method of the KeyListener interface.
     @Override
     public void keyReleased(KeyEvent e) {
 
     }
 
+    // Calculates the bottom and right edges of the GUI.
     private double bottom() {
         return windowY - halfWindowHeight();
     }
@@ -190,6 +241,7 @@ public class Window extends JPanel implements MouseWheelListener, KeyListener, R
         return windowX - halfWindowWidth();
     }
 
+    // Converts a screen coordinate to a real coordinate.
     private double toRealX(int screenX) {
         return screenX / (double) WIDTH * windowWidth + right();
     }
@@ -198,14 +250,16 @@ public class Window extends JPanel implements MouseWheelListener, KeyListener, R
         return (HEIGHT - screenY) / (double) HEIGHT * windowHeight + bottom();
     }
 
-    private int toScreenX(double realX) {
-        return (int) ((realX - right()) / windowWidth * WIDTH);
+    // Converts a real coordinate to a screen coordinate.
+    private int toScreenX() {
+        return (int) ((0.0 - right()) / windowWidth * WIDTH);
     }
 
     private int toScreenY(double realY) {
         return HEIGHT - (int) ((realY - bottom()) / windowHeight * HEIGHT);
     }
 
+    // Calculates half the width and height of the GUI.
     private double halfWindowWidth() {
         return windowWidth / 2.0;
     }
@@ -214,16 +268,58 @@ public class Window extends JPanel implements MouseWheelListener, KeyListener, R
         return windowHeight / 2.0;
     }
 
+    // Overrides the mouseWheelMoved method of the MouseWheelListener interface.
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        double scale = Math.pow(1.15, e.getPreciseWheelRotation());
+        // Calculates the scale factor based on the wheel rotation
+        double scale = StrictMath.pow(1.15, e.getPreciseWheelRotation());
+
+        // Calculates the coordinates of the mouse cursor in the real coordinate system.
         double mxReal = toRealX(e.getX());
         double myReal = toRealY(e.getY());
+
+        // Calculates the relative position of the mouse cursor in the current window.
         double sx = (windowX - mxReal) / windowWidth;
         double sy = (windowY - myReal) / windowHeight;
+
+        // Scales the window size with the calculated scale factor
         windowWidth *= scale;
         windowHeight *= scale;
+
+        // Calculates the new position of the window based on the earlier position and the relative position of the mouse cursor.
         windowX = mxReal + sx * windowWidth;
         windowY = myReal + sy * windowHeight;
     }
+
+    // Inner class that extends MouseAdapter
+    private class MyMouseAdapter extends MouseAdapter {
+        @Override
+        public void mousePressed(MouseEvent e) {
+            // Stores the coordinates of the mouse cursor
+            mousePt = e.getPoint();
+            // Redraws the part
+            repaint();
+        }
+    }
+
+    // Inner class that extends MouseMotionAdapter
+    private class MyMouseMotionAdapter extends MouseMotionAdapter {
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            // Calculates the difference between the current, and the earlier coordinates of the mouse cursor.
+            int dx = e.getX() - mousePt.x;
+            int dy = e.getY() - mousePt.y;
+
+            // Calculates the relative movement of the window based on the mouse movement, and the current window size.
+            windowX -= dx / (double) WIDTH * windowWidth;
+            windowY += dy / (double) HEIGHT * windowHeight;
+
+            // Stores the new coordinates of the mouse cursor
+            mousePt = e.getPoint();
+
+            // Redraws the part
+            repaint();
+        }
+    }
 }
+
