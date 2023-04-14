@@ -16,7 +16,7 @@ public class Secant extends Unary {
 
     @Override
     public double getValue() {
-        double val = realValue(q);
+        double val = Quantity.realValue(q);
         return 1.0 / StrictMath.cos(val);
     }
 }

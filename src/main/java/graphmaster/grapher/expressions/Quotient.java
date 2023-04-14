@@ -17,8 +17,8 @@ public class Quotient extends Binary {
 
     @Override
     public double getValue() {
-        double val1 = realValue(q1);
-        double val2 = realValue(q2);
+        double val1 = Quantity.realValue(q1);
+        double val2 = Quantity.realValue(q2);
         return val1 / val2;
     }
 }

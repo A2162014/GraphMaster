@@ -21,11 +21,11 @@ public class Window extends JPanel implements MouseWheelListener, KeyListener, R
     /**
      * The width of the window.
      */
-    private static final int WIDTH = 1024;
+    private static final int WIDTH = 800;
     /**
      * The height of the window.
      */
-    private static final int HEIGHT = 768;
+    private static final int HEIGHT = 600;
 
     // The buffered image and graphics context for drawing
     private final BufferedImage buff;
@@ -45,15 +45,15 @@ public class Window extends JPanel implements MouseWheelListener, KeyListener, R
     private double yVar;    // Constantly increasing
     private double zVar;    // Cycles from –1 to 1
 
-
     /**
      * Constructs a new window.
      */
     public Window() {
         JButton saveButton = new JButton("Save Graph");
-        saveButton.setFont(new Font("Courier New", Font.PLAIN, 16));
-        saveButton.setForeground(new Color(144, 144, 144));
-        saveButton.setBackground(new Color(231, 231, 231));
+        saveButton.setFont(new Font("Courier New", Font.BOLD, 16));
+        saveButton.setForeground(new Color(245, 245, 245));
+        saveButton.setBackground(Color.BLACK);
+        saveButton.setFocusPainted(false);
         saveButton.addActionListener(e -> saveImage());
         add(saveButton);
 
@@ -120,19 +120,8 @@ public class Window extends JPanel implements MouseWheelListener, KeyListener, R
         super.paintComponent(g);
 
         // Clear the screen
-        g2d.setColor(Color.BLACK);
+        g2d.setColor(new Color(38, 38, 38));
         g2d.fillRect(0, 0, WIDTH, HEIGHT);
-
-        // Draw the grid lines
-        g2d.setColor(new Color(40, 40, 40));
-        g2d.setStroke(new BasicStroke(1.0f));
-        int stepSize = 30; // adjust as needed for grid spacing
-        for (int x = 0; WIDTH >= x; x += stepSize) {
-            g2d.drawLine(x, 0, x, HEIGHT);
-        }
-        for (int y = 0; HEIGHT >= y; y += stepSize) {
-            g2d.drawLine(0, y, WIDTH, y);
-        }
 
         synchronized (this) {
             // Evaluate function and plot points
@@ -164,7 +153,7 @@ public class Window extends JPanel implements MouseWheelListener, KeyListener, R
             }
 
             // Drawing x-axis and y-axis
-            g2d.setColor(new Color(211, 204, 37));
+            g2d.setColor(new Color(128, 128, 128));
             int xAxisY = toScreenY(0.0);
             g2d.drawLine(0, xAxisY, WIDTH, xAxisY);
             int yAxisX = this.toScreenX();
@@ -172,16 +161,16 @@ public class Window extends JPanel implements MouseWheelListener, KeyListener, R
 
             // Drawing the graph
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2d.setColor(new Color(113, 147, 49));
+            g2d.setColor(new Color(92, 179, 133));
             g2d.setStroke(new BasicStroke(3.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND));
             g2d.drawPolyline(xa, ya, xa.length);
 
             // Drawing the function equation
             g2d.setFont(new Font("Courier New", Font.PLAIN, 40));
-            g2d.setColor(new Color(231, 231, 231));
+            g2d.setColor(Color.BLACK);
             FontMetrics fontMetrics = this.g2d.getFontMetrics();
             this.g2d.fillRect(0, HEIGHT - fontMetrics.getHeight(), WIDTH, HEIGHT);
-            g2d.setColor(new Color(144, 144, 144));
+            g2d.setColor(new Color(245, 245, 245));
             g2d.drawString("f(x) = " + textBox, 0.0f, HEIGHT - 10.0f);
 
             // Drawing the axis labels

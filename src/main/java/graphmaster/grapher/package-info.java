@@ -1,17 +1,16 @@
 /**
- * The grapher package provides classes for creating and manipulating graphs.
- * <p>
- * The main class in this package is the Graph class, which represents a graph
- * as a collection of nodes and edges.
- * Other classes in the package give
- * capability for traversing graphs, computing the shortest paths and more.
- * <p>
- * All classes in this package use the standard Java Collections framework,
- * so familiarity with that framework is recommended.
- * Also, some classes
- * use third-party libraries such as JGraphT for advanced graph algorithms.
+ * The grapher package provides classes for visualizing mathematical expressions and functions.
+ * <p>The classes in this package define a graphical user interface for displaying graphs of mathematical functions,
+ * as well as a parser for converting text input expression objects that can be evaluated and graphed.
+ * <p>The following classes are included in this package:
+ * <p>expressions package: Provides classes for creating and manipulating mathematical expressions.
+ * <p>parser package: Provides classes for parsing mathematical expressions from text input.
+ * <p>Window: Represents the main window of the app, which displays the graph and user interface controls.
+ * <p>The parser and expressions packages are used to create expression objects from text input, which are then
+ * evaluated and displayed in the graph window.
+ * <p>The window provides controls for adjusting the appearance of the graph, such as
+ * the range of the x and y axes, the color and style of the plot and the type of function being graphed.
  *
- * @author GraphMaster
- * @version 20
+ * @since 2023–04-14
  */
 package graphmaster.grapher;

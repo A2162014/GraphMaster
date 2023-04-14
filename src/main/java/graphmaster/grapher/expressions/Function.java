@@ -4,10 +4,10 @@ package graphmaster.grapher.expressions;
  * A class representing a mathematical function with three variables: x, y, and z.
  */
 public class Function {
-    private Quantity root;
-    private Variable x;
-    private Variable y;
-    private Variable z;
+    private final Quantity root;
+    private final Variable x;
+    private final Variable y;
+    private final Variable z;
 
     /**
      * Constructs a new Function object with the given root Quantity and variables x, y and z.

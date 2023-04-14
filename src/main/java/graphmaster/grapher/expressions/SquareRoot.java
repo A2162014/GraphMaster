@@ -16,7 +16,7 @@ public class SquareRoot extends Unary {
 
     @Override
     public double getValue() {
-        double val = realValue(q);
+        double val = Quantity.realValue(q);
         return Math.sqrt(val);
     }
 

@@ -1,24 +1,18 @@
 /**
- * The GraphMaster package provides classes for working with graphs and networks.
- * A graph is a mathematical structure that consists of a set of vertices (nodes),
- * and a set of edges that connect them.
- * This package includes implementations of
- * various types of graphs, as well as algorithms for working with graphs, such as
- * shortest path algorithms, connectivity algorithms and graph traversal algorithms.
- * <p>
- * All classes within this package are designed to be thread-safe and performant, with
- * a focus on ease-of-use and flexibility.
- * The package includes interfaces that custom graph classes can implement *,
- * as well as concrete implementations that can
- * be used out-of-the-box.
- * <p>
- * The package is part of the GraphMaster project, which aims to give a comprehensive
- * set of tools for working with graphs in Java.
- * For more information about the project
- * and how to contribute, please the see the project's GitHub repository.
+ * The graphmaster package provides the main entry point for the GraphMaster app.
+ * <p>The classes in this package define the main method that starts the app and initializes
+ * the user interface.
+ * <p>The package has the grapher package, which provides classes for
+ * visualizing mathematical expressions and functions.
+ * <p>The following classes are included in this package:
+ * grapher package: Provides classes for visualizing mathematical expressions and functions.
+ * Main: Represents the main entry point for the GraphMaster app.
+ * <p>The GraphMaster app provides a graphical user interface for creating and displaying
+ * graphs of mathematical functions.
+ * <p>The user can input mathematical expressions as text, which are
+ * then parsed and graphed in real time.
+ * <p>The user can adjust the appearance of the graph, by zooming in and out of the graph.
  *
- * @author 2162014
- * @version 20
- * @since 2023–04–14
+ * @since 2023–04-14
  */
 package graphmaster;
