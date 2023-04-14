@@ -17,7 +17,7 @@ public class Cosecant extends Unary {
 
     @Override
     public double getValue() {
-        double val = realValue(q);
-        return 1.0 / Math.sin(val);
+        double val = Quantity.realValue(q);
+        return 1.0 / StrictMath.sin(val);
     }
 }

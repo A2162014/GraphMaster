@@ -1,14 +1,22 @@
 package graphmaster.grapher.expressions;
 
+/**
+ * The Cotangent class represents a mathematical expression that calculates the cotangent of a quantity.
+ */
 public class Cotangent extends Unary {
 
-    public Cotangent(Quantity q) {
+    /**
+     * Constructs a new Cotangent expression with the specified quantity.
+     *
+     * @param q the quantity to use in the expression
+     */
+    public Cotangent(final Quantity q) {
         super(q);
     }
 
     @Override
     public double getValue() {
-        double val = realValue(q);
-        return 1.0 / Math.tan(val);
+        final double val = Quantity.realValue(this.q);
+        return 1.0 / StrictMath.tan(val);
     }
 }

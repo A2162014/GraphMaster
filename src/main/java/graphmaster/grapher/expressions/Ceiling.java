@@ -16,7 +16,7 @@ public class Ceiling extends Unary {
 
     @Override
     public double getValue() {
-        double val = realValue(q);
+        double val = Quantity.realValue(q);
         return Math.ceil(val);
     }
 }

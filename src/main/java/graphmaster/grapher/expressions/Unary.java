@@ -12,7 +12,7 @@ public abstract class Unary extends Quantity {
      *
      * @param q the quantity to be used in the expression
      */
-    public Unary(Quantity q) {
+    protected Unary(final Quantity q) {
         this.q = q;
     }
 

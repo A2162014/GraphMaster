@@ -1,7 +1,15 @@
 package graphmaster.grapher.expressions;
 
+/**
+ * Represents the sine function.
+ */
 public class Sine extends Unary {
 
+    /**
+     * Constructs a new Sine object with the specified quantity.
+     *
+     * @param q the Quantity object to be used in the Sine operation
+     */
     public Sine(Quantity q) {
         super(q);
     }
@@ -9,6 +17,6 @@ public class Sine extends Unary {
     @Override
     public double getValue() {
         double val = realValue(q);
-        return Math.sin(val);
+        return StrictMath.sin(val);
     }
 }

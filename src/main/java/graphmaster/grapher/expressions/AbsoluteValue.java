@@ -16,7 +16,7 @@ public class AbsoluteValue extends Unary {
 
     @Override
     public double getValue() {
-        double val = realValue(q);
+        final double val = Quantity.realValue(this.q);
         return Math.abs(val);
     }
 }

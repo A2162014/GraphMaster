@@ -1,7 +1,16 @@
 package graphmaster.grapher.expressions;
 
+/**
+ * Represents a mathematical expression that calculates the nth root of a quantity.
+ */
 public class NthRoot extends Binary {
 
+    /**
+     * Creates a new NthRoot expression with the specified quantities.
+     *
+     * @param q    the quantity to take the nth root of
+     * @param root the root to use
+     */
     public NthRoot(Quantity q, Quantity root) {
         super(q, root);
     }
